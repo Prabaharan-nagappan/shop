@@ -4,34 +4,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Advanced CRUD</title>
+    <title>Shop Home</title>
     <link rel="stylesheet" href="{% static 'shop/styles.css' %}">
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to the Shop</h1>
-        
-        <!-- Product Form -->
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn">Add Product</button>
-        </form>
-        
-        <!-- Product List -->
+        <h1>Shop</h1>
+
+        <!-- Filter and Search Section -->
+        <div class="filter-search">
+            <form method="GET" class="filter-form">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ query }}"
+                    placeholder="Search products..."
+                    class="search-input"
+                />
+                <select name="category" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="electronics" {% if category == "electronics" %}selected{% endif %}>
+                        Electronics
+                    </option>
+                    <option value="clothing" {% if category == "clothing" %}selected{% endif %}>
+                        Clothing
+                    </option>
+                    <option value="furniture" {% if category == "furniture" %}selected{% endif %}>
+                        Furniture
+                    </option>
+                </select>
+                <input
+                    type="number"
+                    name="min_price"
+                    value="{{ min_price }}"
+                    placeholder="Min Price"
+                    class="price-input"
+                />
+                <input
+                    type="number"
+                    name="max_price"
+                    value="{{ max_price }}"
+                    placeholder="Max Price"
+                    class="price-input"
+                />
+                <button type="submit" class="btn">Apply Filters</button>
+            </form>
+        </div>
+
+        <!-- Product List Section -->
         <div class="product-list">
             {% for product in products %}
-            <div class="product-card">
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-                <h2>{{ product.name }}</h2>
-                <p>{{ product.description }}</p>
-                <p><strong>${{ product.price }}</strong></p>
-                <a href="{% url 'product_edit' product.id %}" class="btn">Edit</a>
-                <a href="{% url 'product_delete' product.id %}" class="btn delete">Delete</a>
-            </div>
+                <div class="product-card">
+                    <img
+                        src="{{ product.image.url }}"
+                        alt="{{ product.name }}"
+                        class="product-image"
+                    />
+                    <h2>{{ product.name }}</h2>
+                    <p>{{ product.description }}</p>
+                    <p><strong>${{ product.price }}</strong></p>
+                    <a href="{% url 'product_edit' product.id %}" class="btn">Edit</a>
+                    <a href="{% url 'product_delete' product.id %}" class="btn delete">Delete</a>
+                </div>
             {% empty %}
-            <p>No products available.</p>
+                <p>No products found.</p>
             {% endfor %}
+        </div>
+
+        <!-- Add Product Form -->
+        <div class="add-product-form">
+            <h2>Add New Product</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn">Add Product</button>
+            </form>
         </div>
     </div>
 </body>
