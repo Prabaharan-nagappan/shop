@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Advanced CRUD</title>
+    <link rel="stylesheet" href="{% static 'shop/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Shop</h1>
+        
+        <!-- Product Form -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Add Product</button>
+        </form>
+        
+        <!-- Product List -->
+        <div class="product-list">
+            {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                <h2>{{ product.name }}</h2>
+                <p>{{ product.description }}</p>
+                <p><strong>${{ product.price }}</strong></p>
+                <a href="{% url 'product_edit' product.id %}" class="btn">Edit</a>
+                <a href="{% url 'product_delete' product.id %}" class="btn delete">Delete</a>
+            </div>
+            {% empty %}
+            <p>No products available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
